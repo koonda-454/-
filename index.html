@@ -114,6 +114,54 @@
     background: #dcdfe4;
     color: #172b4d;
   }
+
+  .add-card-form {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .add-card-form textarea {
+    resize: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    box-shadow: 0 1px 2px rgba(9, 30, 66, 0.2);
+    outline: 2px solid #4c9aff;
+  }
+
+  .add-card-form .form-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .add-card-form .confirm-btn {
+    background: #0079bf;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .add-card-form .confirm-btn:hover {
+    background: #026aa7;
+  }
+
+  .add-card-form .cancel-btn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    color: #44546f;
+    cursor: pointer;
+    padding: 4px;
+  }
 </style>
 </head>
 <body>
@@ -129,7 +177,9 @@
         <span class="count" data-count="todo">0</span>
       </div>
       <div class="card-list" data-list="todo"></div>
-      <button class="add-card-btn" type="button">+ 카드 추가</button>
+      <div class="add-card-area" data-add-area="todo">
+        <button class="add-card-btn" type="button">+ 카드 추가</button>
+      </div>
     </section>
 
     <section class="column" data-column="doing">
@@ -138,7 +188,9 @@
         <span class="count" data-count="doing">0</span>
       </div>
       <div class="card-list" data-list="doing"></div>
-      <button class="add-card-btn" type="button">+ 카드 추가</button>
+      <div class="add-card-area" data-add-area="doing">
+        <button class="add-card-btn" type="button">+ 카드 추가</button>
+      </div>
     </section>
 
     <section class="column" data-column="done">
@@ -147,7 +199,9 @@
         <span class="count" data-count="done">0</span>
       </div>
       <div class="card-list" data-list="done"></div>
-      <button class="add-card-btn" type="button">+ 카드 추가</button>
+      <div class="add-card-area" data-add-area="done">
+        <button class="add-card-btn" type="button">+ 카드 추가</button>
+      </div>
     </section>
   </main>
 
@@ -170,19 +224,76 @@
       ]
     };
 
-    Object.keys(boardData).forEach(function (columnKey) {
+    function addCardToDOM(columnKey, title) {
       const listEl = document.querySelector('[data-list="' + columnKey + '"]');
       const countEl = document.querySelector('[data-count="' + columnKey + '"]');
-      const cards = boardData[columnKey];
 
-      cards.forEach(function (card) {
-        const cardEl = document.createElement("div");
-        cardEl.className = "card";
-        cardEl.textContent = card.title;
-        listEl.appendChild(cardEl);
+      const cardEl = document.createElement("div");
+      cardEl.className = "card";
+      cardEl.textContent = title;
+      listEl.appendChild(cardEl);
+
+      countEl.textContent = listEl.children.length;
+    }
+
+    function showAddCardForm(columnKey) {
+      const areaEl = document.querySelector('[data-add-area="' + columnKey + '"]');
+
+      const form = document.createElement("div");
+      form.className = "add-card-form";
+      form.innerHTML =
+        '<textarea rows="2" placeholder="할 일 제목을 입력하세요"></textarea>' +
+        '<div class="form-actions">' +
+        '<button type="button" class="confirm-btn">확인</button>' +
+        '<button type="button" class="cancel-btn" aria-label="취소">×</button>' +
+        "</div>";
+
+      areaEl.innerHTML = "";
+      areaEl.appendChild(form);
+
+      const textarea = form.querySelector("textarea");
+      const confirmBtn = form.querySelector(".confirm-btn");
+      const cancelBtn = form.querySelector(".cancel-btn");
+
+      textarea.focus();
+
+      function confirmAdd() {
+        const title = textarea.value.trim();
+        if (title !== "") {
+          addCardToDOM(columnKey, title);
+        }
+        showAddCardButton(columnKey);
+      }
+
+      confirmBtn.addEventListener("click", confirmAdd);
+      cancelBtn.addEventListener("click", function () {
+        showAddCardButton(columnKey);
       });
 
-      countEl.textContent = cards.length;
+      textarea.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          confirmAdd();
+        } else if (event.key === "Escape") {
+          showAddCardButton(columnKey);
+        }
+      });
+    }
+
+    function showAddCardButton(columnKey) {
+      const areaEl = document.querySelector('[data-add-area="' + columnKey + '"]');
+      areaEl.innerHTML = '<button class="add-card-btn" type="button">+ 카드 추가</button>';
+      areaEl.querySelector(".add-card-btn").addEventListener("click", function () {
+        showAddCardForm(columnKey);
+      });
+    }
+
+    Object.keys(boardData).forEach(function (columnKey) {
+      boardData[columnKey].forEach(function (card) {
+        addCardToDOM(columnKey, card.title);
+      });
+
+      showAddCardButton(columnKey);
     });
   </script>
 
