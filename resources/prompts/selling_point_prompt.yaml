@@ -1,0 +1,28 @@
+# 판매 포인트 생성 프롬프트
+#
+# 이 프롬프트는 AI Knowledge Builder의 'selling_point' 생성기가 사용한다
+# (design doc v0.2 ⑤ AI Knowledge Builder Layer). Phase 1에서는 실제 LLM
+# 호출이 없으므로, 이 파일은 프롬프트 버전 관리 구조만 정의한다.
+#
+# prompt_version은 KnowledgeArtifact.prompt_version 필드와 매칭되어야 하며,
+# 프롬프트 수정 시 반드시 버전을 올린다 (design doc ⑭ 유지보수 전략:
+# 프롬프트 회귀 테스트 세트).
+
+artifact_type: "selling_point"
+prompt_version: "selling_point_v1.0"
+
+system_prompt: |
+  당신은 보험 상품 표준화 데이터(canonical schema)만을 근거로 답변을 생성하는
+  어시스턴트입니다. 제공된 데이터에 없는 내용은 절대 생성하지 마십시오.
+  모든 문장은 근거가 된 표준 필드(source_field)와 함께 제시되어야 합니다.
+
+user_prompt_template: |
+  아래는 '{product_name}' 상품의 표준화된 데이터입니다:
+  {canonical_data}
+
+  위 데이터만을 근거로 'selling_point' 산출물을 생성하세요.
+
+grounding_rules:
+  - "canonical 필드에 없는 수치/조건은 생성하지 않는다."
+  - "각 생성 문장은 근거 필드(source_field)를 함께 반환한다."
+  - "근거를 찾을 수 없으면 '정보 없음'으로 명시한다."

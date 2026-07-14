@@ -1,0 +1,29 @@
+# 보험사 설정 예시 파일
+#
+# 이 파일은 실제 보험사를 대표하지 않는 "sample" 설정이다. Phase 1의 목표는
+# 실제 보험사 크롤러를 구현하는 것이 아니라, 이 설정 파일 하나로 Hello
+# Pipeline이 끝까지 동작하는 공통 프레임워크를 검증하는 것이다.
+#
+# 실제 보험사 추가 시에는 이 파일을 복사하여
+# config/companies/{company_id}.yaml 형태로 만들고, crawler_selectors 등
+# 사이트별 세부 항목을 채운다 (design doc ⑥ 보험사별 크롤링 전략).
+
+company_id: "sample_company"
+name: "샘플손해보험"
+name_en: "Sample Insurance Co."
+homepage_url: "https://example.com"
+disclosure_url: "https://example.com/disclosure"
+is_active: true
+
+# 아래는 Phase 1에서는 사용되지 않는, 향후 실제 크롤러 구현 시 참고할
+# 자리 표시자(placeholder) 구조 예시이다.
+crawler_settings:
+  site_type: "static_listing"   # static_listing | js_rendered | popup_download | search_filter
+  categories:
+    - key: "health"
+      label: "건강보험"
+      list_url: "https://example.com/disclosure/health"
+    - key: "driver"
+      label: "운전자보험"
+      list_url: "https://example.com/disclosure/driver"
+  request_delay_seconds: 2.0

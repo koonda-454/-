@@ -1,0 +1,57 @@
+# 공통 표준 스키마 (Canonical Schema) 정의
+#
+# 설계 문서 v0.2 ⑨-2 절 참고. 모든 보험사의 상품 데이터는 이 필드 목록을
+# 기준으로 표준화(Standardization Layer)된다. 새 필드가 필요해지면 이
+# 파일에 항목을 추가하고 schema_version을 올린다 (design doc ⑭ 유지보수 전략).
+#
+# 이 파일은 Phase 1에서는 "정의"만 하고, 실제 매핑 로직(schema_mapper.py)은
+# 이후 Phase에서 구현한다.
+
+schema_version: "0.2.0"
+
+fields:
+  - key: "가입연령"
+    description: "상품 가입 가능한 최소/최대 연령"
+    value_type: "age_range"      # { min_age: int, max_age: int, unit: str }
+    required: true
+
+  - key: "보험기간"
+    description: "보험 계약이 유지되는 기간 (예: 80세만기, 20년만기)"
+    value_type: "text"
+    required: true
+
+  - key: "납입기간"
+    description: "보험료 납입 기간 옵션 목록 (예: 10년납, 20년납, 전기납)"
+    value_type: "text_list"
+    required: false
+
+  - key: "갱신여부"
+    description: "갱신형 여부 및 갱신 주기"
+    value_type: "renewal_info"   # { is_renewal: bool, renewal_cycle: str }
+    required: true
+
+  - key: "보장내용"
+    description: "담보명, 지급금액, 지급조건 목록"
+    value_type: "coverage_list"  # list of { 담보명, 지급금액, 지급조건 }
+    required: true
+
+  - key: "면책사항"
+    description: "보험금이 지급되지 않는 조건"
+    value_type: "text"
+    required: false
+
+  - key: "감액지급"
+    description: "일정 조건에서 보험금이 감액되어 지급되는 조건"
+    value_type: "text"
+    required: false
+
+  - key: "납입면제"
+    description: "특정 조건 충족 시 보험료 납입이 면제되는 조건"
+    value_type: "text"
+    required: false
+
+mapping_policy:
+  # 표준화 신뢰도가 이 값보다 낮으면 AI Knowledge Builder 실행 전
+  # review_queue로 우선 전송한다 (design doc ⑬).
+  min_confidence_for_auto_pipeline: 0.75
+  allow_null_for_missing_fields: true

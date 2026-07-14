@@ -1,0 +1,50 @@
+# 삼성화재 보험사 설정
+#
+# 분석 결과(대화 중 보고된 내용) 및 Phase 2 pilot 설계 반영.
+# api_endpoint는 scripts/discover_samsung_fire_api.py 실행 후 실제 JSON API가
+# 발견되면 채워 넣는다. null인 동안 SamsungFireCrawler는 Playwright DOM
+# 스크래핑 폴백 경로를 사용한다.
+
+company_id: "samsung_fire"
+name: "삼성화재"
+name_en: "Samsung Fire & Marine Insurance"
+homepage_url: "https://www.samsungfire.com"
+disclosure_url: "https://www.samsungfire.com/vh/page/VH.HPIF0103.do"
+is_active: true
+
+crawler_settings:
+  entry_url: "https://www.samsungfire.com/vh/page/VH.HPIF0103.do"
+
+  # scripts/discover_samsung_fire_api.py 실행 결과에 따라 채운다.
+  # null이면 Playwright DOM 스크래핑 폴백 사용.
+  api_endpoint: null
+
+  # 최상위 탭 5종 (2026-07-13 정적 분석 확인, "주관부서 연락처" 표와 일치).
+  # "건강보험/암보험/운전자보험" 등은 이 탭들의 하위 값으로 추정되며,
+  # 크롤러가 각 상품 행의 실제 productCategory 값을 그대로 사용해
+  # 폴더 구조에 반영한다 (하드코딩하지 않음).
+  categories:
+    - key: "auto"
+      label: "자동차보험"
+    - key: "longterm"
+      label: "장기보험"
+    - key: "general"
+      label: "일반보험"
+    - key: "pension"
+      label: "퇴직연금"
+    - key: "retirement"
+      label: "퇴직보험"
+
+  # 대상 문서 컬럼 (사업방법서/보험약관은 수집 대상 아님)
+  target_document_label: "상품요약서"
+
+  # 판매중지상품 포함 여부 - 기본값 false (판매상품만 수집)
+  include_discontinued: false
+
+  request_delay_seconds: 2.0
+
+  user_agent: "InsuranceKB-Bot/0.1 (+contact: tbd@example.com)"
+
+# robots.txt는 최초 1회만 확인 후 프로세스 내에서 캐시된다
+# (insurance_kb.utils.robots_util 참고). 이 설정 파일 자체에는
+# robots.txt 관련 값이 없다 — 실제 URL 기준으로 동적으로 확인한다.

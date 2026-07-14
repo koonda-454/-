@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "insurance-ai-knowledge-platform"
+version = "0.1.0"
+description = "국내 손해보험사 상품 공시자료를 수집·표준화·AI 가공하여 FAQ AI / RAG Knowledge Base를 구축하는 플랫폼 (Phase 1: 공통 프레임워크)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+
+dependencies = [
+    "pydantic>=2.7,<3.0",
+    "PyYAML>=6.0,<7.0",
+    "loguru>=0.7,<1.0",
+    "tenacity>=8.2,<9.0",
+    "httpx>=0.27,<1.0",
+    "playwright>=1.44,<2.0",
+    "beautifulsoup4>=4.12,<5.0",
+    "pymupdf>=1.24,<2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<9.0",
+    "pytest-cov>=5.0,<6.0",
+    "black>=24.0,<25.0",
+    "ruff>=0.5,<1.0",
+    "mypy>=1.10,<2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -m \"not live\""
+markers = [
+    "live: exercises real network access against actual insurer websites; excluded by default, run explicitly with `pytest -m live`",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true

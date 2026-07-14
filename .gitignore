@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Data & logs (실제 데이터/로그는 추적하지 않되, 폴더 구조는 .gitkeep으로 유지)
+data/raw/*
+!data/raw/.gitkeep
+data/extracted_text/*
+!data/extracted_text/.gitkeep
+data/structured/*
+!data/structured/.gitkeep
+data/standardized/*
+!data/standardized/.gitkeep
+data/knowledge/*
+!data/knowledge/.gitkeep
+data/chunks/source_chunks/*
+!data/chunks/source_chunks/.gitkeep
+data/chunks/ai_generated_chunks/*
+!data/chunks/ai_generated_chunks/.gitkeep
+data/exports/*
+!data/exports/.gitkeep
+db/*
+!db/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store

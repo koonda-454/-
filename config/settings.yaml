@@ -1,0 +1,44 @@
+# 전역 설정 (Insurance AI Knowledge Platform)
+#
+# 이 파일은 특정 보험사나 프롬프트에 종속되지 않는, 시스템 전역 동작을
+# 제어하는 값만 담는다. 보험사별 설정은 config/companies/*.yaml,
+# 프롬프트는 resources/prompts/*.yaml 로 분리되어 있다.
+
+project:
+  name: "insurance-ai-knowledge-platform"
+  version: "0.1.0"          # Phase 1 scaffold version
+  phase: "phase1_common_framework"
+
+paths:
+  data_root: "data"
+  raw_dir: "data/raw"
+  extracted_text_dir: "data/extracted_text"
+  structured_dir: "data/structured"
+  standardized_dir: "data/standardized"
+  knowledge_dir: "data/knowledge"
+  chunks_source_dir: "data/chunks/source_chunks"
+  chunks_ai_generated_dir: "data/chunks/ai_generated_chunks"
+  exports_dir: "data/exports"
+  db_dir: "db"
+  log_dir: "logs"
+
+logging:
+  console_level: "INFO"
+  file_level: "DEBUG"
+  rotation: "10 MB"
+  retention: "14 days"
+
+crawling:
+  request_delay_seconds: 2.0     # 사이트별 최소 요청 간격 (robots.txt Crawl-delay 준수)
+  respect_robots_txt: true
+  max_concurrent_requests: 2
+  user_agent: "InsuranceKB-Bot/0.1 (+contact: tbd@example.com)"
+
+retry:
+  max_attempts: 3
+  min_wait_seconds: 1.0
+  max_wait_seconds: 10.0
+
+pipeline:
+  # Phase 1에서는 dummy 구현체만 사용한다. 실제 보험사/AI 연동은 이후 Phase에서 활성화.
+  use_dummy_stages: true
